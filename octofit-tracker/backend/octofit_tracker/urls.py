@@ -1,3 +1,4 @@
+import os
 """octofit_tracker URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -28,14 +29,21 @@ router.register(r'activities', views.ActivityViewSet)
 router.register(r'leaderboard', views.LeaderboardViewSet)
 router.register(r'workouts', views.WorkoutViewSet)
 
+
+CODESPACE_NAME = os.environ.get('CODESPACE_NAME')
+def get_api_url(path):
+    if CODESPACE_NAME:
+        return f"https://{CODESPACE_NAME}-8000.app.github.dev/api/{path}"
+    return f"/api/{path}"
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'users': request.build_absolute_uri('users/'),
-        'teams': request.build_absolute_uri('teams/'),
-        'activities': request.build_absolute_uri('activities/'),
-        'leaderboard': request.build_absolute_uri('leaderboard/'),
-        'workouts': request.build_absolute_uri('workouts/'),
+        'users': get_api_url('users/'),
+        'teams': get_api_url('teams/'),
+        'activities': get_api_url('activities/'),
+        'leaderboard': get_api_url('leaderboard/'),
+        'workouts': get_api_url('workouts/'),
     })
 
 urlpatterns = [
